@@ -1,11 +1,15 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import { ProductOverviewContainer, Row, GlobalStyle } from "./styles/App.styles.js";
+import {
+  ProductOverviewContainer,
+  Row,
+  GlobalStyle,
+} from './styles/App.styles.js';
 import ProductHeader from './components/ProductHeader/ProductHeader.jsx';
 import ProductImagesViewer from './components/ProductImagesViewer/ProductImagesViewer.jsx';
 import ProductInfo from './components/ProductInfo/ProductInfo.jsx';
 import CarouselModal from './components/CarouselModal/CarouselModal.jsx';
-import Navbar from './components/Navbar/Navbar.jsx'
+import Navbar from './components/Navbar/Navbar.jsx';
 import DeliveryCards from './components/DeliveryCards/DeliveryCards.jsx';
 import axios from 'axios';
 
@@ -18,48 +22,44 @@ const App = () => {
   }, []);
 
   const getProductData = () => {
-    const { href } = window.location;
-    const id = href.substring(href.lastIndexOf('/') + 1);
-
-    axios.get(`/api/products/${id || 0}`)
-      .then(({data}) => {
-        // Pushes '' to render extra thumbnail for adding user photos
-        data.images.push('');
-        setProductData(data);
-      });
-  }
+    const { pathname } = window.location;
+    const id = pathname.replace(/\//g, '');
+    axios.get(`/api/products/${id || 0}`).then(({ data }) => {
+      // Pushes '' to render extra thumbnail for adding user photos
+      data.images.push('');
+      setProductData(data);
+    });
+  };
 
   const toggleCarousel = () => {
     setCarousel(!carousel);
-  }
+  };
 
   return (
     <>
       <GlobalStyle />
       <Navbar />
-      {
-        productData &&
-          <ProductOverviewContainer>
-            <ProductHeader productData={productData} />
-            <Row>
-              <ProductImagesViewer
-                images={productData.images}
-                toggleCarousel={toggleCarousel}
-              />
-              <ProductInfo productData={productData} />
-              <DeliveryCards />
-            </Row>
-          </ProductOverviewContainer>
-      }
-      {
-        (carousel && productData) &&
-          <CarouselModal
-            images={productData.images}
-            toggleCarousel={toggleCarousel}
-          />
-      }
+      {productData && (
+        <ProductOverviewContainer>
+          <ProductHeader productData={productData} />
+          <Row>
+            <ProductImagesViewer
+              images={productData.images}
+              toggleCarousel={toggleCarousel}
+            />
+            <ProductInfo productData={productData} />
+            <DeliveryCards />
+          </Row>
+        </ProductOverviewContainer>
+      )}
+      {carousel && productData && (
+        <CarouselModal
+          images={productData.images}
+          toggleCarousel={toggleCarousel}
+        />
+      )}
     </>
-  )
-}
+  );
+};
 
 ReactDOM.render(<App />, document.getElementById('service1'));
