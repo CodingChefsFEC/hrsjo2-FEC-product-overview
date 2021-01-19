@@ -107,7 +107,7 @@ const ProductImagesViewer = ({images, toggleCarousel}) => {
               })}
             </Thumbnails>
             <MainImageContainer className="productImagesViewer--mainImage">
-              <ZoomLens id="zoomLens" onMouseMove={moveLens} />
+              <ZoomLens id="zoomLens" />
               <MainImage
                 id="normalImg" src={images[imageIndex]}
                 className="mainImage"
